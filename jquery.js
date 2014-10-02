@@ -43,7 +43,22 @@ var makeRestaurant = function(venue, tips) {
  * @return {[type]}            [description]
  */
 var displayRestaurant = function(restaurant) {
-  console.log(restaurant);
+  var name = restaurant.name
+  $('<h2>').text(name).addClass('restaurant-name').appendTo('.name-container');
+  var photo = restaurant.photo;
+  $('<img>').attr('src', photo).addClass('restaurant-photo').appendTo('.photo-container');
+  var quote = restaurant.quote;
+  $('<p>').text(quote).addClass('restaurant-quote').appendTo('.user-quote');
+  var price = restaurant.price;
+  $('<p>').text("Price: " + price).addClass('col-md-3').appendTo('.restaurant-info');
+  var rating = restaurant.rating;
+  $('<p>').text("Rating: " + rating).addClass('col-md-3').appendTo('.restaurant-info');
+  var hours = restaurant.hours;
+  $('<p>').text(hours).addClass('col-md-3').appendTo('.restaurant-info');
+  var phone = restaurant.phone;
+  $('<p>').text(phone).addClass('col-md-3').appendTo('.restaurant-info');
+  var menu = restaurant.menu;
+  $('.menu-button').attr('href', menu);
 };
 
 jQuery.ajax({
