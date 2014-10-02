@@ -4,11 +4,11 @@ restaurant.photo;
 restaurant.name;
 restaurant.price;
 restaurant.rating;
-// var restaurantHours;
-// var restaurantPhone;
-// var restaurantDescription;
-// var restaurantMenu;
-// var restaurantMap;
+restaurant.hours;
+restaurant.phone;
+restaurant.quote;
+restaurant.menu;
+restaurant.location;
 
 jQuery.ajax({
   url: 'https://api.foursquare.com/v2/venues/explore?near=45.5,-122.7&venuePhotos=1&section=food&limit=50&client_id=QT0SUCBNBMPUR2WGKOMWSAMVBCGN4WYRN30VVOAZHMBUM5T3&client_secret=TZOQGZMVTSMAM5D3GE0AEHMHZCFNBNS0IH4EKDBRCIJBRNXW&v=20141002',
@@ -30,6 +30,16 @@ jQuery.ajax({
   restaurant.price = randomRestaurant.venue.price.currency;
   // Get restaurant rating.
   restaurant.rating = randomRestaurant.venue.rating;
+  // Get restaurant hours.
+  restaurant.hours = randomRestaurant.venue.hours.status;
+  // Get restaurant phone number.
+  restaurant.phone = randomRestaurant.venue.contact.formattedPhone;
+  // Get short quote about restaurant from user.
+  restaurant.quote = randomRestaurant.tips[0].text;
+  // Get link to menu.
+  restaurant.menu = randomRestaurant.venue.menu.mobileUrl;
+  // Get restaurant longitude and latitude.
+  restaurant.location = randomRestaurant.venue.location;
 }, function(errorThrown){
   console.log(errorThrown);
 })
