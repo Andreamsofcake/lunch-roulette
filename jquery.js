@@ -1,14 +1,50 @@
-var restaurant = new Object()
 
-restaurant.photo;
-restaurant.name;
-restaurant.price;
-restaurant.rating;
-restaurant.hours;
-restaurant.phone;
-restaurant.quote;
-restaurant.menu;
-restaurant.location;
+/**
+ * @typedef {Object} Restaurant
+ *
+ * @property {String} photo - Describe.
+ * @property {String} name - Restaurant name.
+ * @property {String} price - Restaurant price as a $.
+ * @property {Number} rating - Restaurant rating as out of 10.
+ * @property {String} hours - When restaurant closes today.
+ * @property {String} phone - Restaurant phone number as a (xxx) xxx-xxxx.
+ * @property {String} quote - Short quote about restaurant from user.
+ * @property {String} menu - URL to mobile menu at Foursquare.
+ * @property {Object} location - Location object.
+ * @property {Number} location.lat - Latitude.
+ * @property {Number} location.lng - Longitude.
+ */
+
+/**
+ * Make a restaurant from a Foursquare venue and tips.
+ *
+ * @param  {Objet} venue Direct from Foursquare
+ * @param  {Object} tips Direct from Foursquare
+ * @return {Restaurant} The restaurant object.
+ */
+var makeRestaurant = function(venue, tips) {
+  var restaurant = {};
+  var photo = venue.photos.groups[0].items[0];
+  restaurant.photo = photo.prefix + photo.width + 'x' + photo.height + photo.suffix;
+  restaurant.name = venue.name;
+  restaurant.price = venue.price.currency;
+  restaurant.rating = venue.rating;
+  restaurant.hours = venue.hours.status;
+  restaurant.phone = venue.contact.formattedPhone;
+  restaurant.quote = tips[0].text;
+  restaurant.menu = venue.menu.mobileUrl;
+  restaurant.location = venue.location;
+  return restaurant;
+};
+
+/**
+ * Make divs and stuff to display everything rul awezome like.
+ * @param  {Restaurant} restaurant [description]
+ * @return {[type]}            [description]
+ */
+var displayRestaurant = function(restaurant) {
+  console.log(restaurant);
+};
 
 jQuery.ajax({
   url: 'https://api.foursquare.com/v2/venues/explore?near=45.5,-122.7&venuePhotos=1&section=food&limit=50&client_id=QT0SUCBNBMPUR2WGKOMWSAMVBCGN4WYRN30VVOAZHMBUM5T3&client_secret=TZOQGZMVTSMAM5D3GE0AEHMHZCFNBNS0IH4EKDBRCIJBRNXW&v=20141002',
@@ -16,34 +52,16 @@ jQuery.ajax({
   dataType: 'json'
 })
 .then(function(data){
-  // Creates random restaurant object based on array of venues.
+  // Creates random restaurant object based on array of objects that contain venues and tips.
   var venuesArray = data.response.groups[0].items;
   var randomNumber = _.random(0, venuesArray.length - 1);
-  var randomRestaurant = venuesArray[randomNumber];
-  // Creates usable photo URL based on the random restaurant.
-  console.log(randomRestaurant);
-  var photo = randomRestaurant.venue.photos.groups[0].items[0];
-  restaurant.photo = photo.prefix + photo.width + 'x' + photo.height + photo.suffix;
-  // Gets restaurant name.
-  restaurant.name = randomRestaurant.venue.name;
-  // Get restaurant price.
-  restaurant.price = randomRestaurant.venue.price.currency;
-  // Get restaurant rating.
-  restaurant.rating = randomRestaurant.venue.rating;
-  // Get restaurant hours.
-  restaurant.hours = randomRestaurant.venue.hours.status;
-  // Get restaurant phone number.
-  restaurant.phone = randomRestaurant.venue.contact.formattedPhone;
-  // Get short quote about restaurant from user.
-  restaurant.quote = randomRestaurant.tips[0].text;
-  // Get link to menu.
-  restaurant.menu = randomRestaurant.venue.menu.mobileUrl;
-  // Get restaurant longitude and latitude.
-  restaurant.location = randomRestaurant.venue.location;
+  var randomItem = venuesArray[randomNumber];
+  console.log(randomItem);
+
+  var restaurant = makeRestaurant(randomItem.venue, randomItem.tips);
+  displayRestaurant(restaurant);
+
 }, function(errorThrown){
   console.log(errorThrown);
-})
-.then(function(){
-  console.log(restaurant);
 });
 
