@@ -32,8 +32,15 @@ var makeRestaurant = function(venue, tips) {
   restaurant.hours = venue.hours.status;
   restaurant.phone = venue.contact.formattedPhone;
   restaurant.quote = tips[0].text;
-  restaurant.menu = venue.menu.mobileUrl;
+  if (restaurant.hasMenu === true) {
+    restaurant.menu = venue.menu.mobileUrl;
+  } else {
+    restaurant.menu = "#";
+  }
   restaurant.location = venue.location;
+  var latLng = restaurant.location.lat + ',' + restaurant.location.lng;
+  restaurant.mapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + latLng + '&zoom=17&size=400x400&markers=|' + latLng + '|';
+  console.log(restaurant.mapUrl);
   return restaurant;
 };
 
@@ -51,8 +58,17 @@ var displayRestaurant = function(restaurant) {
   $('.restaurant-phone').text(restaurant.phone);
   $('.restaurant-photo').attr('src', restaurant.photo);
   $('.menu-button').attr('href', restaurant.menu);
+  $('.google-map').attr('src', restaurant.mapUrl);
   $('.restaurant-loaded').show();
 };
+
+// var currentLocation = navigator.geolocation.getCurrentPosition(function(pos) {
+//   var latitude = pos.coords.latitude;
+//   var longitude = pos.coords.longitude;
+//   var location = latitude.toString() + ',' + longitude.toString();
+//   return location;
+// });
+// console.log(currentLocation);
 
 jQuery.ajax({
   url: 'https://api.foursquare.com/v2/venues/explore?near=45.5,-122.7&venuePhotos=1&section=food&limit=50&client_id=QT0SUCBNBMPUR2WGKOMWSAMVBCGN4WYRN30VVOAZHMBUM5T3&client_secret=TZOQGZMVTSMAM5D3GE0AEHMHZCFNBNS0IH4EKDBRCIJBRNXW&v=20141002',
