@@ -40,7 +40,6 @@ var makeRestaurant = function(venue, tips) {
   restaurant.location = venue.location;
   var latLng = restaurant.location.lat + ',' + restaurant.location.lng;
   restaurant.mapUrl = 'https://maps.googleapis.com/maps/api/staticmap?center=' + latLng + '&zoom=17&size=400x400&markers=|' + latLng + '|';
-  console.log(restaurant.mapUrl);
   return restaurant;
 };
 
@@ -62,13 +61,16 @@ var displayRestaurant = function(restaurant) {
   $('.restaurant-loaded').show();
 };
 
-// var currentLocation = navigator.geolocation.getCurrentPosition(function(pos) {
-//   var latitude = pos.coords.latitude;
-//   var longitude = pos.coords.longitude;
-//   var location = latitude.toString() + ',' + longitude.toString();
-//   return location;
-// });
-// console.log(currentLocation);
+function getCurrentLocation() {
+
+  function success(position) {
+    var latitude = (position.coords.latitude).toFixed(2);
+    var longitude = (position.coords.longitude).toFixed(2);
+    var location = latitude.toString() + ',' + longitude.toString();
+    console.log(location);
+  };
+  navigator.geolocation.getCurrentPosition(success);
+};
 
 jQuery.ajax({
   url: 'https://api.foursquare.com/v2/venues/explore?near=45.5,-122.7&venuePhotos=1&section=food&limit=50&client_id=QT0SUCBNBMPUR2WGKOMWSAMVBCGN4WYRN30VVOAZHMBUM5T3&client_secret=TZOQGZMVTSMAM5D3GE0AEHMHZCFNBNS0IH4EKDBRCIJBRNXW&v=20141002',
