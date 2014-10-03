@@ -61,24 +61,6 @@ var displayRestaurant = function(restaurant) {
   $('.restaurant-loaded').show();
 };
 
-/*
- * TODO: Document this function call
- * 
- */
-navigator.geolocation.getCurrentPosition(function(position) {
-  var latitude = (position.coords.latitude).toFixed(2);
-  var longitude = (position.coords.longitude).toFixed(2);
-  var location = latitude.toString() + ',' + longitude.toString();
-  findRestaurant(location);
-  console.log(location);
-  }, function(error) {
-    var defaultLocation = '45.5,-122.7';
-    console.log(error);
-    findRestaurant(defaultLocation);
-  }
-);
-
-
 var findRestaurant = function(location) {
 
   jQuery.ajax({
@@ -100,3 +82,28 @@ var findRestaurant = function(location) {
     console.log(errorThrown);
   });
 };
+
+/*
+ * TODO: Document this function call
+ * 
+ */
+var findMeSomeFood = function () {
+
+    function success(position) {
+      var latitude = (position.coords.latitude).toFixed(2);
+      var longitude = (position.coords.longitude).toFixed(2);
+      var location = latitude.toString() + ',' + longitude.toString();
+      findRestaurant(location);
+      console.log(location);
+    };
+
+    function error(error) {
+      var defaultLocation = '45.5,-122.7';
+      console.log(error);
+      findRestaurant(defaultLocation);
+    };
+
+  navigator.geolocation.getCurrentPosition(success, error);
+};
+
+findMeSomeFood();
