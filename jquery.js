@@ -61,33 +61,42 @@ var displayRestaurant = function(restaurant) {
   $('.restaurant-loaded').show();
 };
 
-function getCurrentLocation() {
+/*
+ * TODO: Document this function call
+ * 
+ */
+navigator.geolocation.getCurrentPosition(function(position) {
+  var latitude = (position.coords.latitude).toFixed(2);
+  var longitude = (position.coords.longitude).toFixed(2);
+  var location = latitude.toString() + ',' + longitude.toString();
+  findRestaurant(location);
+  console.log(location);
+  }, function(error) {
+    var defaultLocation = '45.5,-122.7';
+    console.log(error);
+    findRestaurant(defaultLocation);
+  }
+);
 
-  function success(position) {
-    var latitude = (position.coords.latitude).toFixed(2);
-    var longitude = (position.coords.longitude).toFixed(2);
-    var location = latitude.toString() + ',' + longitude.toString();
-    console.log(location);
-  };
-  navigator.geolocation.getCurrentPosition(success);
+
+var findRestaurant = function(location) {
+
+  jQuery.ajax({
+    url: 'https://api.foursquare.com/v2/venues/explore?near='+ location +'&venuePhotos=1&section=food&limit=50&client_id=QT0SUCBNBMPUR2WGKOMWSAMVBCGN4WYRN30VVOAZHMBUM5T3&client_secret=TZOQGZMVTSMAM5D3GE0AEHMHZCFNBNS0IH4EKDBRCIJBRNXW&v=20141002',
+    type: 'GET',
+    dataType: 'json'
+  })
+  .then(function(data){
+    // Creates random restaurant object based on array of objects that contain venues and tips.
+    var venuesArray = data.response.groups[0].items;
+    var randomNumber = _.random(0, venuesArray.length - 1);
+    var randomItem = venuesArray[randomNumber];
+    console.log(randomItem);
+
+    var restaurant = makeRestaurant(randomItem.venue, randomItem.tips);
+    displayRestaurant(restaurant);
+
+  }, function(errorThrown){
+    console.log(errorThrown);
+  });
 };
-
-jQuery.ajax({
-  url: 'https://api.foursquare.com/v2/venues/explore?near=45.5,-122.7&venuePhotos=1&section=food&limit=50&client_id=QT0SUCBNBMPUR2WGKOMWSAMVBCGN4WYRN30VVOAZHMBUM5T3&client_secret=TZOQGZMVTSMAM5D3GE0AEHMHZCFNBNS0IH4EKDBRCIJBRNXW&v=20141002',
-  type: 'GET',
-  dataType: 'json'
-})
-.then(function(data){
-  // Creates random restaurant object based on array of objects that contain venues and tips.
-  var venuesArray = data.response.groups[0].items;
-  var randomNumber = _.random(0, venuesArray.length - 1);
-  var randomItem = venuesArray[randomNumber];
-  console.log(randomItem);
-
-  var restaurant = makeRestaurant(randomItem.venue, randomItem.tips);
-  displayRestaurant(restaurant);
-
-}, function(errorThrown){
-  console.log(errorThrown);
-});
-
